@@ -1,3 +1,20 @@
+# Expense Tracker API
+
+## Problem Statement
+
+The **Expense Tracker API** is designed to help users manage their personal expenses efficiently. It allows users to perform CRUD operations on their financial data, enabling them to:
+
+1. **Track Transactions**: Record income and expenses with details such as amount, date, and associated category.
+2. **Organize by Categories**: Classify transactions into predefined or custom categories like "Groceries," "Rent," or "Utilities."
+3. **User Management**: Securely manage user accounts, ensuring each user's financial data is private and protected.
+
+## Key Features
+
+- RESTful API with proper request validation and error handling.
+- Secure data handling with UUIDs and timestamps for tracking entity creation and updates.
+- Scalable architecture using Spring Boot, allowing further enhancements like analytics or reporting in the future.
+
+This API serves as a foundational service for building financial management applications or integrating with larger systems.
 
 ### **User Endpoints**
 
