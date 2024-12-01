@@ -16,6 +16,10 @@ The **Expense Tracker API** is designed to help users manage their personal expe
 
 This API serves as a foundational service for building financial management applications or integrating with larger systems.
 
+----------
+
+![Entities Relationship Diagram](C:\Users\AnandJangid\Desktop\Spring Boot\expense-tracker\entities.png "Title")
+
 ### **User Endpoints**
 
 1.  **Register User**
