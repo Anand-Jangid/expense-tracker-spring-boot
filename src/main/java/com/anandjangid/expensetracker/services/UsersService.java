@@ -12,7 +12,7 @@ import java.util.UUID;
 @Service
 public class UsersService {
 
-    private UsersRepository usersRepository;
+    private final UsersRepository usersRepository;
 
     public UsersService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;

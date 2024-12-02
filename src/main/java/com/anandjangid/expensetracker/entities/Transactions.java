@@ -38,7 +38,7 @@ public class Transactions {
     @Column(nullable = false)
     private Double amount;
 
-    @Column(length = 255)
+    @Column()
     private String description;
 
 

@@ -34,10 +34,10 @@ public class Categories {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String name;
 
-    @Column(length = 255)
+    @Column()
     private String description;
 
     @ManyToOne
