@@ -18,7 +18,7 @@ This API serves as a foundational service for building financial management appl
 
 ----------
 
-![Entities Relationship Diagram](C:\Users\AnandJangid\Desktop\Spring Boot\expense-tracker\entities.png "Title")
+![Project Logo](entities.png)
 
 ### **User Endpoints**
 
