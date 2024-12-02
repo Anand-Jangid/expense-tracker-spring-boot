@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -27,12 +26,12 @@ public class Users {
     @Column(unique = true, nullable = false)
     private UUID id;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
+//    @CreatedDate
+//    @Column(name = "created_at", nullable = false, updatable = false) // Use snake_case for column names
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    @Column(nullable = false)
+//    @LastModifiedDate
+//    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @Column(nullable = false, length = 255)
@@ -49,4 +48,10 @@ public class Users {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transactions> transactionsList;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
 }

@@ -45,4 +45,8 @@ public class Transactions {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private Users user;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Categories category;
 }
