@@ -10,6 +10,10 @@ import com.anandjangid.expensetracker.repositories.CategoriesRepository;
 import com.anandjangid.expensetracker.repositories.UsersRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 @Service
 public class CategoriesService {
 
@@ -34,6 +38,15 @@ public class CategoriesService {
         categories.setUser(user);
         var savedCategory = categoriesRepository.save(categories);
         return getCategoriesResponseDto(savedCategory);
+    }
+
+    public List<CategoriesResponseDto> getAllCategoriesByUserId(UUID userId) {
+        List<Categories> categoriesList = categoriesRepository.findByUserId(userId);
+        List<CategoriesResponseDto> categoriesResponseDtoList = new ArrayList<>();
+        categoriesList.forEach(categories -> {
+            categoriesResponseDtoList.add(getCategoriesResponseDto(categories));
+        });
+        return categoriesResponseDtoList;
     }
 
     private static CategoriesResponseDto getCategoriesResponseDto(Categories savedCategory) {
