@@ -3,6 +3,7 @@ package com.anandjangid.expensetracker.controllers;
 
 import com.anandjangid.expensetracker.dtos.categories.CategoriesRequestDto;
 import com.anandjangid.expensetracker.dtos.categories.CategoriesResponseDto;
+import com.anandjangid.expensetracker.dtos.categories.CategoriesUpdateDto;
 import com.anandjangid.expensetracker.services.CategoriesService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -30,5 +31,11 @@ public class CategoriesController {
     public ResponseEntity<List<CategoriesResponseDto>> getCategories(@PathVariable UUID id) {
         var categoryList = categoriesService.getAllCategoriesByUserId(id);
         return ResponseEntity.ok().body(categoryList);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<CategoriesResponseDto> updateCategoriesById(@PathVariable UUID id, @Valid @RequestBody CategoriesUpdateDto categoriesUpdateDto) {
+        var categoryResponse = categoriesService.updateCategoriesById(id, categoriesUpdateDto);
+        return ResponseEntity.ok().body(categoryResponse);
     }
 }
