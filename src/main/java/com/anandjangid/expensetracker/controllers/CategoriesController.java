@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -38,4 +39,11 @@ public class CategoriesController {
         var categoryResponse = categoriesService.updateCategoriesById(id, categoriesUpdateDto);
         return ResponseEntity.ok().body(categoryResponse);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Objects> deleteCategoriesById(@PathVariable UUID id) {
+        categoriesService.deleteCategoriesById(id);
+        return ResponseEntity.ok().build();
+    }
+
 }

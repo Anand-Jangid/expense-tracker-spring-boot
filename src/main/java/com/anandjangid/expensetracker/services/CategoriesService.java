@@ -66,8 +66,17 @@ public class CategoriesService {
         return getCategoriesResponseDto(savedCategory);
     }
 
+    public void deleteCategoriesById(UUID categoryId) {
+        Categories categories = categoriesRepository.findById(categoryId).orElse(null);
+        if(categories == null) {
+            throw new CategoryNotFoundException("category id: " + categoryId + "not found");
+        }
+        categoriesRepository.delete(categories);
+    }
+
     private static CategoriesResponseDto getCategoriesResponseDto(Categories savedCategory) {
         CategoriesResponseDto categoriesResponseDto = new CategoriesResponseDto();
+        categoriesResponseDto.setId(savedCategory.getId());
         categoriesResponseDto.setName(savedCategory.getName());
         categoriesResponseDto.setDescription(savedCategory.getDescription());
         categoriesResponseDto.setCreatedAt(String.valueOf(savedCategory.getCreatedAt()));
