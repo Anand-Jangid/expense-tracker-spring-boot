@@ -4,9 +4,11 @@ import com.anandjangid.expensetracker.dtos.users.UserRequestDto;
 import com.anandjangid.expensetracker.dtos.users.UserResponseDto;
 import com.anandjangid.expensetracker.dtos.users.UserUpdateDto;
 import com.anandjangid.expensetracker.entities.Users;
+import com.anandjangid.expensetracker.exceptions.users.UserAlreadyExistsException;
 import com.anandjangid.expensetracker.repositories.UsersRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -19,6 +21,11 @@ public class UsersService {
     }
 
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
+        Optional<Users> oldUser = usersRepository.findByEmail(userRequestDto.getEmail());
+
+        if(oldUser.isPresent()){
+            throw new UserAlreadyExistsException("Email "+ userRequestDto.getEmail() +" already exists");
+        }
         // Map UserRequestDto to Users entity
         Users user = new Users();
         user.setName(userRequestDto.getName());
