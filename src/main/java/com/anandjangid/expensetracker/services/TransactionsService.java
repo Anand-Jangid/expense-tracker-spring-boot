@@ -12,6 +12,11 @@ import com.anandjangid.expensetracker.repositories.TransactionsRepository;
 import com.anandjangid.expensetracker.repositories.UsersRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class TransactionsService {
 
@@ -40,15 +45,34 @@ public class TransactionsService {
         transactions.setDescription(transactionRequestDto.getDescription());
         transactions.setCategory(categories);
         transactions.setUser(users);
-        transactionsRepository.save(transactions);
+        Transactions savedTransaction = transactionsRepository.save(transactions);
 
+        return getTransactionResponseDto(savedTransaction);
+    }
+
+    private static TransactionResponseDto getTransactionResponseDto(Transactions savedTransaction) {
         TransactionResponseDto transactionResponseDto = new TransactionResponseDto();
-        transactionResponseDto.setId(transactions.getId());
-        transactionResponseDto.setAmount(transactions.getAmount());
-        transactionResponseDto.setTransactionType(transactions.getTransactionType());
-        transactionResponseDto.setDescription(transactions.getDescription());
-        transactionResponseDto.setCreatedAt(transactions.getCreatedAt().toString());
-        transactionResponseDto.setUpdatedAt(transactions.getUpdatedAt().toString());
+        transactionResponseDto.setId(savedTransaction.getId());
+        transactionResponseDto.setAmount(savedTransaction.getAmount());
+        transactionResponseDto.setTransactionType(savedTransaction.getTransactionType());
+        transactionResponseDto.setDescription(savedTransaction.getDescription());
+        transactionResponseDto.setCreatedAt(savedTransaction.getCreatedAt().toString());
+        transactionResponseDto.setUpdatedAt(savedTransaction.getUpdatedAt().toString());
         return transactionResponseDto;
+    }
+
+    public List<TransactionResponseDto> getAllTransactionsByUserId(UUID userId) {
+        if(userId == null) return null;
+        Users user = usersRepository.findById(userId).orElse(null);
+        if(user == null) {
+            throw new UserNotFoundException("User id: "+ userId+ " not found");
+        }
+        List<Transactions> transactions = transactionsRepository.findByUser(user);
+        List<TransactionResponseDto> transactionResponseDtos = new ArrayList<>();
+        transactions.forEach((transaction) -> {
+            transactionResponseDtos.add(getTransactionResponseDto(transaction));
+        });
+
+        return transactionResponseDtos;
     }
 }
