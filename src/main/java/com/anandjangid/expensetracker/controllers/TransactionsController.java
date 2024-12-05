@@ -28,8 +28,13 @@ public class TransactionsController {
         return transactionsService.getAllTransactionsByUserId(userId);
     }
 
-    @GetMapping("/id")
-    public TransactionResponseDto getTransactionById(@RequestParam UUID transactionId) {
-        return transactionsService.getTransactionById(transactionId);
+    @GetMapping("/id/{id}")
+    public TransactionResponseDto getTransactionById(@PathVariable UUID id) {
+        return transactionsService.getTransactionById(id);
+    }
+
+    @DeleteMapping("/id/{id}")
+    public void deleteTransactionById(@PathVariable UUID id){
+        transactionsService.deleteTransactionById(id);
     }
 }

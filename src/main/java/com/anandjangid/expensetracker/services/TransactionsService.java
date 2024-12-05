@@ -84,4 +84,13 @@ public class TransactionsService {
         }
         return getTransactionResponseDto(transactions);
     }
+
+    public void deleteTransactionById(UUID transactionId){
+        Transactions transactions = transactionsRepository.findById(transactionId).orElse(null);
+        if(transactions == null){
+            throw new TransactionNotFoundException("Transaction id: " + transactionId + " not found");
+        }
+
+        transactionsRepository.deleteById(transactionId);
+    }
 }
