@@ -2,6 +2,7 @@ package com.anandjangid.expensetracker.services;
 
 import com.anandjangid.expensetracker.dtos.transactions.TransactionRequestDto;
 import com.anandjangid.expensetracker.dtos.transactions.TransactionResponseDto;
+import com.anandjangid.expensetracker.dtos.transactions.TransactionUpdateDto;
 import com.anandjangid.expensetracker.entities.Categories;
 import com.anandjangid.expensetracker.entities.Transactions;
 import com.anandjangid.expensetracker.entities.Users;
@@ -92,5 +93,32 @@ public class TransactionsService {
         }
 
         transactionsRepository.deleteById(transactionId);
+    }
+
+    public TransactionResponseDto updateTransaction(UUID transactionId, TransactionUpdateDto transactionUpdateDto){
+        Transactions transactions = transactionsRepository.findById(transactionId).orElse(null);
+        if(transactions == null){
+            throw new TransactionNotFoundException("Transactions id: " + transactionId + " not found");
+        }
+
+        if(transactionUpdateDto.getCategoryId() != null){
+            Categories categories = categoriesRepository.findById(transactionUpdateDto.getCategoryId()).orElse(null);
+            if(categories == null){
+                throw new CategoryNotFoundException("Category id: " + transactionUpdateDto.getCategoryId() + " not found.");
+            }
+            transactions.setCategory(categories);
+        }
+        if(transactionUpdateDto.getType() != null){
+            transactions.setTransactionType(transactionUpdateDto.getType());
+        }
+        if(transactionUpdateDto.getDescription() != null){
+            transactions.setDescription(transactionUpdateDto.getDescription());
+        }
+        if(transactionUpdateDto.getAmount() != null){
+            transactions.setAmount(transactionUpdateDto.getAmount());
+        }
+        Transactions updatedTransaction = transactionsRepository.save(transactions);
+
+        return getTransactionResponseDto(updatedTransaction);
     }
 }
