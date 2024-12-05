@@ -1,5 +1,6 @@
 package com.anandjangid.expensetracker.exceptions;
 
+import com.anandjangid.expensetracker.exceptions.transactions.TransactionNotFoundException;
 import com.anandjangid.expensetracker.exceptions.users.UserAlreadyExistsException;
 import com.anandjangid.expensetracker.exceptions.users.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -29,5 +30,11 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     public final ResponseEntity<ErrorDetails> handleUserAlreadyExistsException(Exception ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(TransactionNotFoundException.class)
+    public final ResponseEntity<ErrorDetails> handleTransactionNotFoundException(Exception ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 }

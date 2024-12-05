@@ -6,6 +6,7 @@ import com.anandjangid.expensetracker.entities.Categories;
 import com.anandjangid.expensetracker.entities.Transactions;
 import com.anandjangid.expensetracker.entities.Users;
 import com.anandjangid.expensetracker.exceptions.categories.CategoryNotFoundException;
+import com.anandjangid.expensetracker.exceptions.transactions.TransactionNotFoundException;
 import com.anandjangid.expensetracker.exceptions.users.UserNotFoundException;
 import com.anandjangid.expensetracker.repositories.CategoriesRepository;
 import com.anandjangid.expensetracker.repositories.TransactionsRepository;
@@ -74,5 +75,13 @@ public class TransactionsService {
         });
 
         return transactionResponseDtos;
+    }
+
+    public TransactionResponseDto getTransactionById(UUID transactionId){
+        Transactions transactions = transactionsRepository.findById(transactionId).orElse(null);
+        if(transactions == null){
+            throw new TransactionNotFoundException("Transaction id: "+ transactionId+ " not found");
+        }
+        return getTransactionResponseDto(transactions);
     }
 }

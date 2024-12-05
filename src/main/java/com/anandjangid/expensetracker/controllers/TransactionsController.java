@@ -24,7 +24,12 @@ public class TransactionsController {
     }
 
     @GetMapping
-    public List<TransactionResponseDto> getAllTransactions(@RequestParam UUID userId) {
+    public List<TransactionResponseDto> getAllTransactions(@RequestParam UUID userId, @RequestParam UUID transactionId) {
         return transactionsService.getAllTransactionsByUserId(userId);
+    }
+
+    @GetMapping("/id")
+    public TransactionResponseDto getTransactionById(@RequestParam UUID transactionId) {
+        return transactionsService.getTransactionById(transactionId);
     }
 }
