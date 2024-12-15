@@ -6,6 +6,7 @@ import com.anandjangid.expensetracker.exceptions.UnauthorizedException;
 import com.anandjangid.expensetracker.exceptions.users.UserNotFoundException;
 import com.anandjangid.expensetracker.jwt.JWTUtil;
 import com.anandjangid.expensetracker.services.UsersService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,24 +24,15 @@ public class UsersController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<UserResponseDto> getUserProfile(@RequestHeader("Authorization") String authorizationHeader) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new UnauthorizedException("Authorization header is missing or malformed");
-        }
-
-        String token = authorizationHeader.substring(7);
-        String userId = jwtUtil.extractUserId(token);
+    public ResponseEntity<UserResponseDto> getUserProfile(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
         var userProfile = userService.getUserById(UUID.fromString(userId));
         return ResponseEntity.ok(userProfile);
     }
 
     @PatchMapping("/profile")
-    public ResponseEntity<UserResponseDto> updateUserProfile(@RequestHeader("Authorization") String authorizationHeader, @RequestBody UserUpdateDto userUpdateDto) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new UnauthorizedException("Authorization header is missing or malformed");
-        }
-        String token = authorizationHeader.substring(7);
-        UUID userId = UUID.fromString(jwtUtil.extractUserId(token));
+    public ResponseEntity<UserResponseDto> updateUserProfile(HttpServletRequest request, @RequestBody UserUpdateDto userUpdateDto) {
+        UUID userId = UUID.fromString((String) request.getAttribute("userId"));
 
         UserResponseDto userResponseDto = userService.updateUser(userId, userUpdateDto);
         if(userResponseDto == null) throw new UserNotFoundException("user with id: " + userId + " not found");
