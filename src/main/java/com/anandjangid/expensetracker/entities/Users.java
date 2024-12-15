@@ -1,14 +1,13 @@
 package com.anandjangid.expensetracker.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -17,6 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString
 public class Users {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -24,12 +24,8 @@ public class Users {
     @Column(unique = true, nullable = false)
     private UUID id;
 
-//    @CreatedDate
-//    @Column(name = "created_at", nullable = false, updatable = false) // Use snake_case for column names
     private LocalDateTime createdAt;
 
-//    @LastModifiedDate
-//    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
@@ -40,6 +36,11 @@ public class Users {
 
     @Column(nullable = false)
     private String password;
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Categories> categoriesList;

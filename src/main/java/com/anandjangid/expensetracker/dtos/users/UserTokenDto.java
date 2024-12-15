@@ -1,4 +1,10 @@
 package com.anandjangid.expensetracker.dtos.users;
 
-public class UserToken {
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class UserTokenDto {
+    String token;
 }

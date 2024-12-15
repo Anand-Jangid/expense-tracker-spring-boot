@@ -1,11 +1,15 @@
 package com.anandjangid.expensetracker.services;
 
+import com.anandjangid.expensetracker.dtos.users.UserLoginDto;
 import com.anandjangid.expensetracker.dtos.users.UserRequestDto;
 import com.anandjangid.expensetracker.dtos.users.UserResponseDto;
 import com.anandjangid.expensetracker.dtos.users.UserUpdateDto;
 import com.anandjangid.expensetracker.entities.Users;
 import com.anandjangid.expensetracker.exceptions.users.UserAlreadyExistsException;
+import com.anandjangid.expensetracker.exceptions.users.UserNotFoundException;
+import com.anandjangid.expensetracker.jwt.JWTUtil;
 import com.anandjangid.expensetracker.repositories.UsersRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,9 +19,26 @@ import java.util.UUID;
 public class UsersService {
 
     private final UsersRepository usersRepository;
+    private final JWTUtil jwtUtil;
+    private PasswordEncoder passwordEncoder;
 
-    public UsersService(UsersRepository usersRepository) {
+    public UsersService(UsersRepository usersRepository, JWTUtil jwtUtil, PasswordEncoder passwordEncoder) {
         this.usersRepository = usersRepository;
+        this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public String registerUser(UserRequestDto userRequestDto) throws UserAlreadyExistsException {
+        var user = createUser(userRequestDto);
+        return jwtUtil.generateToken(user.getId());
+    }
+
+    public String loginUser(UserLoginDto userLoginDto) throws UserNotFoundException {
+        var user = getUserByEmail(userLoginDto.getEmail());
+        if(passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
+            return jwtUtil.generateToken(user.getId());
+        }
+        throw new UserNotFoundException("email or password incorrect");
     }
 
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
@@ -30,7 +51,7 @@ public class UsersService {
         Users user = new Users();
         user.setName(userRequestDto.getName());
         user.setEmail(userRequestDto.getEmail());
-        user.setPassword(userRequestDto.getPassword());
+        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
 
         // Save the user to the database
         Users savedUser = usersRepository.save(user);
@@ -65,7 +86,11 @@ public class UsersService {
         return getUserResponseDto(savedUser);
     }
 
-    private UserResponseDto getUserResponseDto(Users user) {
+    public Users getUserByEmail(String email) {
+        return usersRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: " +email + " not found."));
+    }
+
+    public UserResponseDto getUserResponseDto(Users user) {
         UserResponseDto responseDto = new UserResponseDto();
         responseDto.setId(user.getId());
         responseDto.setName(user.getName());
