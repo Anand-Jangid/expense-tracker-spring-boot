@@ -23,8 +23,5 @@ public class TransactionRequestDto {
 
     @NotNull(message = "Category ID cannot be null")
     private UUID categoryId;
-
-    @NotNull(message = "User ID cannot be null")
-    private UUID userId;
 }
 

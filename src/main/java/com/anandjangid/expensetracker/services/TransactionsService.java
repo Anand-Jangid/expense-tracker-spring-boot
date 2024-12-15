@@ -16,15 +16,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class TransactionsService {
 
-    private TransactionsRepository transactionsRepository;
-    private UsersRepository usersRepository;
-    private CategoriesRepository categoriesRepository;
+    private final TransactionsRepository transactionsRepository;
+    private final UsersRepository usersRepository;
+    private final CategoriesRepository categoriesRepository;
 
     public TransactionsService(TransactionsRepository transactionsRepository, UsersRepository usersRepository, CategoriesRepository categoriesRepository) {
         this.transactionsRepository = transactionsRepository;
@@ -32,11 +31,12 @@ public class TransactionsService {
         this.categoriesRepository = categoriesRepository;
     }
 
-    public TransactionResponseDto createTransaction(TransactionRequestDto transactionRequestDto) {
-        Users users = usersRepository.findById(transactionRequestDto.getUserId()).orElse(null);
+    public TransactionResponseDto createTransaction(TransactionRequestDto transactionRequestDto, UUID userId) {
+        Users users = usersRepository.findById(userId).orElse(null);
         if(users == null) {
-            throw new UserNotFoundException("User id: "+ transactionRequestDto.getUserId()+ " not found");
+            throw new UserNotFoundException("User id: "+ userId+ " not found");
         }
+        //TODO: Make sure user does not takes categoryId of some other user
         Categories categories = categoriesRepository.findById(transactionRequestDto.getCategoryId()).orElse(null);
         if(categories == null){
             throw new CategoryNotFoundException("Category id: "+ transactionRequestDto.getCategoryId()+ " not found");
@@ -71,9 +71,7 @@ public class TransactionsService {
         }
         List<Transactions> transactions = transactionsRepository.findByUser(user);
         List<TransactionResponseDto> transactionResponseDtos = new ArrayList<>();
-        transactions.forEach((transaction) -> {
-            transactionResponseDtos.add(getTransactionResponseDto(transaction));
-        });
+        transactions.forEach((transaction) -> transactionResponseDtos.add(getTransactionResponseDto(transaction)));
 
         return transactionResponseDtos;
     }
