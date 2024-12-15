@@ -5,6 +5,7 @@ import com.anandjangid.expensetracker.dtos.categories.CategoriesRequestDto;
 import com.anandjangid.expensetracker.dtos.categories.CategoriesResponseDto;
 import com.anandjangid.expensetracker.dtos.categories.CategoriesUpdateDto;
 import com.anandjangid.expensetracker.services.CategoriesService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,14 +24,16 @@ public class CategoriesController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoriesResponseDto> createCategories(@Valid @RequestBody CategoriesRequestDto categoriesRequestDto) {
-        var categoryResponse = categoriesService.createCategories(categoriesRequestDto);
+    public ResponseEntity<CategoriesResponseDto> createCategories(@Valid @RequestBody CategoriesRequestDto categoriesRequestDto, HttpServletRequest request) {
+        UUID userId = UUID.fromString((String) request.getAttribute("userId"));
+        var categoryResponse = categoriesService.createCategories(categoriesRequestDto, userId);
         return ResponseEntity.ok().body(categoryResponse);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<CategoriesResponseDto>> getCategories(@PathVariable UUID id) {
-        var categoryList = categoriesService.getAllCategoriesByUserId(id);
+    @GetMapping
+    public ResponseEntity<List<CategoriesResponseDto>> getCategories(HttpServletRequest request) {
+        UUID userId = UUID.fromString((String) request.getAttribute("userId"));
+        var categoryList = categoriesService.getAllCategoriesByUserId(userId);
         return ResponseEntity.ok().body(categoryList);
     }
 

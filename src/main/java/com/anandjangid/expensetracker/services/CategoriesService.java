@@ -26,11 +26,11 @@ public class CategoriesService {
         this.usersRepository = usersRepository;
     }
 
-    public CategoriesResponseDto createCategories(CategoriesRequestDto categoriesRequestDto) {
-        Users user = usersRepository.findById(categoriesRequestDto.getUserId()).orElse(null);
+    public CategoriesResponseDto createCategories(CategoriesRequestDto categoriesRequestDto, UUID userId) {
+        Users user = usersRepository.findById(userId).orElse(null);
 
         if(user == null) {
-            throw new UserNotFoundException("user id: " + categoriesRequestDto.getUserId() + " not found");
+            throw new UserNotFoundException("user id: " + userId + " not found");
         }
 
         Categories categories = new Categories();
@@ -45,9 +45,7 @@ public class CategoriesService {
     public List<CategoriesResponseDto> getAllCategoriesByUserId(UUID userId) {
         List<Categories> categoriesList = categoriesRepository.findByUserId(userId);
         List<CategoriesResponseDto> categoriesResponseDtoList = new ArrayList<>();
-        categoriesList.forEach(categories -> {
-            categoriesResponseDtoList.add(getCategoriesResponseDto(categories));
-        });
+        categoriesList.forEach(categories -> categoriesResponseDtoList.add(getCategoriesResponseDto(categories)));
         return categoriesResponseDtoList;
     }
 
