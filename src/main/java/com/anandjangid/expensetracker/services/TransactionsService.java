@@ -12,6 +12,7 @@ import com.anandjangid.expensetracker.exceptions.users.UserNotFoundException;
 import com.anandjangid.expensetracker.repositories.CategoriesRepository;
 import com.anandjangid.expensetracker.repositories.TransactionsRepository;
 import com.anandjangid.expensetracker.repositories.UsersRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class TransactionsService {
         this.categoriesRepository = categoriesRepository;
     }
 
+    @Transactional
     public TransactionResponseDto createTransaction(TransactionRequestDto transactionRequestDto, UUID userId) {
         Users users = usersRepository.findById(userId).orElse(null);
         if(users == null) {
@@ -69,7 +71,7 @@ public class TransactionsService {
         if(user == null) {
             throw new UserNotFoundException("User id: "+ userId+ " not found");
         }
-        List<Transactions> transactions = transactionsRepository.findByUser(user);
+        List<Transactions> transactions = transactionsRepository.findByUserOrderByCreatedAtDesc(user);
         List<TransactionResponseDto> transactionResponseDtos = new ArrayList<>();
         transactions.forEach((transaction) -> transactionResponseDtos.add(getTransactionResponseDto(transaction)));
 
