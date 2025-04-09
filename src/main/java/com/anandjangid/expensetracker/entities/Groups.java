@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-// @Getter
-// @Setter
-// @NoArgsConstructor
-// @AllArgsConstructor
-// @ToString
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Entity
 public class Groups {
     @Id
